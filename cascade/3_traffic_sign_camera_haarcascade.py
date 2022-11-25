@@ -15,7 +15,7 @@ cap.set(cv2.CAP_PROP_SATURATION,70)
 cap.set(cv2.CAP_PROP_GAIN,80)
 
 
-traffic_cascade_name = '/home/pi/Desktop/autopilot/cascade/3_traffic_sign_cascade.xml'
+traffic_cascade_name = '/home/pi/Desktop/self_driving_car-main/cascade/3_traffic_sign_cascade.xml'
 traffic_cascade = cv2.CascadeClassifier()
 
 
