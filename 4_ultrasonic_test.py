@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import cv2
 
 GPIO.setwarnings(False)
 
@@ -37,6 +38,8 @@ def Distance():
     #print ("distance_1 is %d " % (((t2 - t1)* 340 / 2) * 100))
     return ((t2 - t1)* 340 / 2) * 100
 
+count = 0
+
 def Distance_test():
     num = 0
     ultrasonic = []
@@ -53,14 +56,25 @@ def Distance_test():
             num = num + 1
             time.sleep(0.01)
     distance = (ultrasonic[1] + ultrasonic[2] + ultrasonic[3])/3
-    print("distance is %f"%(distance) ) 
+    print("count({}/20)".format(count), "distance is %f"%(distance) ) 
     return distance
 
-try:
-    while True:
-        distance = Distance_test()
-        time.sleep(0.01)
-except KeyboardInterrupt:
-    pass
+
+
+while count < 20:
+    distance = Distance_test()
+    k= cv2.waitKey(30) & 0xff
+    if k == 27:
+        print ("27")
+        break
+
+    time.sleep(0.2)
+    count += 1 
+
+
+
 print("Ending")
 GPIO.cleanup()
+
+cv2.destroyAllWindows()
+exit() 

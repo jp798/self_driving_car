@@ -9,11 +9,17 @@ cap = cv2.VideoCapture(0)
 cap.set(3,320) # set Width
 cap.set(4,240) # set Height
 
+cap.set(cv2.CAP_PROP_BRIGHTNESS,40)
+cap.set(cv2.CAP_PROP_CONTRAST,40)
+cap.set(cv2.CAP_PROP_SATURATION,20)
+cap.set(cv2.CAP_PROP_GAIN,20)
+
+
 car = YB_Pcb_Car.YB_Pcb_Car()
 MOTOR_UP_SPEED = 70  ####   65 0 ~ 125 Speed 
 MOTOR_DOWN_SPEED = 35   ####  30 
 
-DETECT_VALUE = 130  #### 밝기 70 /120
+DETECT_VALUE = 30  #### 밝기 70 /130
 
 IS_STOP = False 
 
@@ -51,9 +57,20 @@ def Right() :
     direction = None 
     count = 0 
 
+#######  90° arc 
+car.Ctrl_Servo(1, 90) #The servo connected to the S1 interface on the expansion board, rotate to 90°
+time.sleep(0.5)
+        
+car.Ctrl_Servo(2, 135) #The servo connected to the S2 interface on the expansion board, rotate to 90°
+time.sleep(0.5)
+
+
+
 while True : 
 
     ret, frame = cap.read()
+
+
 
 
 
@@ -111,12 +128,12 @@ while True :
             direction = "RIGHT"
             
             print ("                   [[ RIGHT ]]:" ,right-left)
-            Left()
+            # Left()
         
         else :  #### Left 방향일 경우에 
             direction = "LEFT"
             print ("[[ LEFT ]]:", right-left)
-            Right()
+            # Right()
 
 
     else :  #### Up(직진) 방향일 경우에.... 
@@ -124,8 +141,8 @@ while True :
 
         if up < 10000 : 
 
-            Up() 
-            # pass
+            # Up() 
+            pass
         else : 
 
             random_direction = random.randrange(1,7)

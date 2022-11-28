@@ -56,7 +56,7 @@ while True :
 
         cv2.putText(img,"Red Traffic Sign", (x-30,y+20), cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,0))
         cv2.imshow("test",img)
-        cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
+        # cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
 
         count += 1 
 

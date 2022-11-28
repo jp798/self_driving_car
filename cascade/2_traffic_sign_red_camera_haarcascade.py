@@ -15,7 +15,7 @@ cap.set(cv2.CAP_PROP_SATURATION,70)
 cap.set(cv2.CAP_PROP_GAIN,80)
 
 
-traffic_cascade_name = '2_traffic_sign_red_cascade.xml'
+traffic_cascade_name = '2_traffic_sign_red_cascade-org.xml'
 traffic_cascade = cv2.CascadeClassifier()
 
 
@@ -56,7 +56,7 @@ while True :
 
         cv2.putText(img,"Red Traffic Sign", (x-30,y+20), cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,0))
         cv2.imshow("test",img)
-        cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
+        # cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
 
         count += 1 
 
