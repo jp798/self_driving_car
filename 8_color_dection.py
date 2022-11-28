@@ -48,10 +48,10 @@ while True :
         hsv = cv2.cvtColor(limited_frame, cv2.COLOR_BGR2HSV)
         hue,_,_ = cv2.split(hsv)
         mean_of_hue = cv2.mean(hue)[0]
-        # print(mean_of_hue)
+        print('color:',mean_of_hue)
         
-        # hue = cv2.inRange(hue,3, 10)  ###### orange Mask     
-        # hue = cv2.inRange(hue,70, 80)  ###### green Mask     
+        # hue = cv2.inRange(hue,24, 40)  ###### yellow Mask     
+        # hue = cv2.inRange(hue,55, 75)  ###### green Mask     
         hue = cv2.inRange(hue, 160, 180)  ###### Red Mask
         orange = cv2.bitwise_and(hsv, hsv, mask = hue)
         orange = cv2.cvtColor(orange, cv2.COLOR_HSV2BGR)
