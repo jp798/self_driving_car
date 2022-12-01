@@ -128,24 +128,26 @@ while True :
             direction = "RIGHT"
             
             print ("                   [[ RIGHT ]]:" ,right-left)
-            # Left()
+            Left()
         
         else :  #### Left 방향일 경우에 
             direction = "LEFT"
             print ("[[ LEFT ]]:", right-left)
-            # Right()
+            Right()
 
 
     else :  #### Up(직진) 방향일 경우에.... 
         print ("      [[ UP ]]:", up)
 
-        if up < 10000 : 
+        if up < 10000 : #### up 가운데 부분을 분산도가 높지 않을 경우에... 
 
-            # Up() 
-            pass
+            Up() 
+            
         else : 
 
-            random_direction = random.randrange(1,7)
+            Up()
+            ###### 수치 계산 따로 해야 함 
+            # random_direction = random.randrange(1,7)
             # Down()
             # time.sleep(0.1)
 
