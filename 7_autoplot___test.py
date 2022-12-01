@@ -126,7 +126,6 @@ while True :
 
         if right > left :  ### right 방향일 경우에... 
             direction = "RIGHT"
-            
             print ("                   [[ RIGHT ]]:" ,right-left)
             Left()
         
