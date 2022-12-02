@@ -113,8 +113,8 @@ while True :
     histogram_length = len(histogram)
    
 
-    left = np.sum(histogram[:int(histogram_length/4)])
-    right = np.sum(histogram[int(3*histogram_length/4):])
+    left = int(np.sum(histogram[:int(histogram_length/4)]))
+    right = int(np.sum(histogram[int(3*histogram_length/4):]))
     
     up = np.sum(histogram[int(2*histogram_length/4):int(3*histogram_length/4)])
     
