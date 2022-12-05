@@ -8,10 +8,15 @@ cap = cv2.VideoCapture(0)
 cap.set(3,320) ### set Width 
 cap.set(4,240) ### set Height
 
+cap.set(cv2.CAP_PROP_BRIGHTNESS,70)
+cap.set(cv2.CAP_PROP_CONTRAST,50)
+cap.set(cv2.CAP_PROP_SATURATION,20)
+cap.set(cv2.CAP_PROP_GAIN,20)
 
-while True : 
+try : 
+    while True : 
 
-    try : 
+   
         ret , frame = cap.read()
         frame_copy = frame.copy()
 
@@ -50,8 +55,8 @@ while True :
         mean_of_hue = cv2.mean(hue)[0]
         print('color:',mean_of_hue)
         
-        # hue = cv2.inRange(hue,24, 40)  ###### yellow Mask     
-        # hue = cv2.inRange(hue,55, 75)  ###### green Mask     
+        #hue = cv2.inRange(hue,24, 40)  ###### yellow Mask     
+        #hue = cv2.inRange(hue,55, 75)  ###### green Mask     
         hue = cv2.inRange(hue, 160, 180)  ###### Red Mask
         orange = cv2.bitwise_and(hsv, hsv, mask = hue)
         orange = cv2.cvtColor(orange, cv2.COLOR_HSV2BGR)
@@ -85,17 +90,18 @@ while True :
 
         time.sleep(0.1)
 
-    except Exception as E : 
-        
-        print("error->",E)
+except Exception as E : 
+    
+    print("error->",E)
 
-        cap.release()
-        cv2.destroyAllWindows()
-        exit()
+    car.Car_Stop()
+    cap.release()
+    cv2.destroyAllWindows()
+    exit()
 
 
 
-
+car.Car_Stop()
 cap.release()
 cv2.destroyAllWindows()
 exit()

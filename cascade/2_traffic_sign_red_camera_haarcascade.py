@@ -15,7 +15,8 @@ cap.set(cv2.CAP_PROP_SATURATION,70)
 cap.set(cv2.CAP_PROP_GAIN,80)
 
 
-traffic_cascade_name = '2_traffic_sign_red_cascade-org.xml'
+# traffic_cascade_name = '2_traffic_sign_red_cascade-org.xml'
+traffic_cascade_name = 'cascade.xml'
 traffic_cascade = cv2.CascadeClassifier()
 
 
