@@ -75,6 +75,12 @@ cap = cv2.VideoCapture(0)
 cap.set(3,320) # set Width
 cap.set(4,240) # set Height
 
+cap.set(cv2.CAP_PROP_BRIGHTNESS,70)
+cap.set(cv2.CAP_PROP_CONTRAST,50)
+cap.set(cv2.CAP_PROP_SATURATION,20)
+cap.set(cv2.CAP_PROP_GAIN,20)
+
+
 ##### Set Motor 
 car = YB_Pcb_Car.YB_Pcb_Car()
 MOTOR_UP_SPEED = 70 ####   65 0 ~ 125 Speed    #### 70 
@@ -117,11 +123,11 @@ def Right() :
 
 
 
+try : 
 
-while True : 
+    while True : 
 
 
-    try : 
         distance  = Distance_test()
         # distance = 0 
         
@@ -166,14 +172,15 @@ while True :
 
             cv2.imshow("3_red_frame",orange)
             mean_of_hue = cv2.mean(hue)[0]
+            print(mean_of_hue)
 
 
             if mean_of_hue > 10 : 
-                p.start(20)
-                car.Car_Stop()
-                time.sleep(0.5)
+                p.start(20)  ### 소리 "삐익"
+                car.Car_Stop() ### 정지
+                time.sleep(0.5) ### 0.5초간 유지 
                 print ("Red:",mean_of_hue)
-                p.stop()
+                p.stop() ### "삐익" 소리 중지 
 
 
 
@@ -197,8 +204,8 @@ while True :
             histogram_length = len(histogram)
         
 
-            left = np.sum(histogram[:int(histogram_length/4)])
-            right = np.sum(histogram[int(3*histogram_length/4):])
+            left =  int(np.sum(histogram[:int(histogram_length/4)]))
+            right = int(np.sum(histogram[int(3*histogram_length/4):]))
             
             up = np.sum(histogram[int(2*histogram_length/4):int(3*histogram_length/4)])
             
@@ -206,7 +213,7 @@ while True :
             print("histogram",histogram)
             print ("{}|--({})--|{} ".format(left,right-left,right))
 
-            if ( abs(right-left) > 100000) : 
+            if ( abs(right-left) > 1000) : 
 
                 if right > left :  ### right 방향일 경우에... 
                     direction = "RIGHT"
@@ -277,14 +284,15 @@ while True :
         if k == 27: # press 'ESC' to quit
             break
 
-    except Exception as E : 
-        print("error:", error)
+ 
+
+except Exception as E : 
+        print("error:", E)
 
         car.Car_Stop()
         cap.release()
         cv2.destroyAllWindows()
         exit()
-
 
 car.Car_Stop()
 cap.release()
