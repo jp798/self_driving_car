@@ -162,7 +162,7 @@ try :
             hsv = cv2.cvtColor(limited_frame_copy, cv2.COLOR_BGR2HSV)
             hue,_,_ = cv2.split(hsv)
             mean_of_hue = cv2.mean(hue)[0]
-            # print(mean_of_hue)
+            print(mean_of_hue) #### 자신에게 맞는 색깔 찾기 
         
             # hue = cv2.inRange(hue,3, 10)  ###### orange Mask     
             # hue = cv2.inRange(hue,70, 80)  ###### green Mask     
