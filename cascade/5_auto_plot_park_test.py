@@ -92,15 +92,14 @@ def isParkSign(frame) :
         cv2.putText(img,"Park OK(sign)", (x-20,y+h+10), cv2.FONT_HERSHEY_SIMPLEX,0.7,(255,255,255))
         cv2.imshow("0.Park OK(sign)",img)
     
-
-        return True 
+        return { "success" :True, "rect": (x,y,w,h)}
 
     except : 
         
         # cv2.imshow("stop sign",frame)
         cv2.imshow("0.Park OK(sign)",frame)
 
-        return False
+        return {"success": False, "rect" : ()}
 
     
 
@@ -113,9 +112,9 @@ try :
 
         ret, frame = cap.read()
 
+        park_sign = isParkSign(frame.copy())
 
-
-        if isParkSign(frame.copy()) : 
+        if park_sign["success"] : 
 
             ##### 주차 시스템 동작 
             # Up()
