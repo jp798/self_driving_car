@@ -28,68 +28,39 @@ if not traffic_cascade.load(cv2.samples.findFile(traffic_cascade_name)):
 count = 0 
 
 
-def traffic_sign(frame) :  
-
-    try :
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-        cv2.imshow("frmae",frame)
-        cv2.imshow("gary img",gray)
-
-
-        img = None; 
-
-        traffic_sign = traffic_cascade.detectMultiScale(gray)
-        (x,y,w,h) = traffic_sign[0]
-
-        return (True,(x,y,w,h))
-
-    except : 
-
-        return (False,())
-
-
-def hsv_color_detection (limited_frame_copy) : 
-
-    hsv = cv2.cvtColor(limited_frame_copy, cv2.COLOR_BGR2HSV)
-    hue,_,_ = cv2.split(hsv)
-    mean_of_hue = cv2.mean(hue)[0]
-    # print(mean_of_hue)
-
-    # hue = cv2.inRange(hue,3, 10)  ###### orange Mask     
-    # hue = cv2.inRange(hue,70, 80)  ###### green Mask     
-    hue = cv2.inRange(hue, 160, 180)  ###### Red Mask
-    orange = cv2.bitwise_and(hsv, hsv, mask = hue)
-    orange = cv2.cvtColor(orange, cv2.COLOR_HSV2BGR)
-
-    cv2.imshow("3red_frame",orange)
-    mean_of_hue = cv2.mean(hue)[0]
-
-    return mean_of_hue
-
-
-
-
 while True : 
 
-    
+    ###-- 2. 이미지 읽기 
+
     ret, frame  = cap.read()
-    traffic_sign_result = traffic_sign(frame)
 
 
-    if traffic_sign_result[0] : 
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    cv2.imshow("frmae",frame)
+    cv2.imshow("gary img",gray)
 
-        (x,y,w,h) = traffic_sign_result[1]
-        
-        for (x,y,w,h) in traffic_sign:
-            center = (x + w//2, y + h//2)
-            img = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
+
+    img = None; 
+
+    traffic_sign = traffic_cascade.detectMultiScale(gray)
+    for (x,y,w,h) in traffic_sign:
+        center = (x + w//2, y + h//2)
+        img = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
+
+    print(traffic_sign)
+
+   
+
+    try : 
+        (x,y,w,h) = traffic_sign[0]
 
         cv2.putText(img,"Red Traffic Sign", (x-30,y+20), cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,0))
         cv2.imshow("test",img)
-        
+        # cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
 
-    else : 
+        count += 1 
+
+    except : 
         cv2.imshow("test",frame)
 
     k = cv2.waitKey(30) & 0xff

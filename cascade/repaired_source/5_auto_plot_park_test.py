@@ -57,12 +57,6 @@ def Right() :
     direction = None 
     count = 0 
 
-#######  90° arc 
-#car.Ctrl_Servo(1, 90) #The servo connected to the S1 interface on the expansion board, rotate to 90°
-#time.sleep(0.5)
-        
-#car.Ctrl_Servo(2, 135) #The servo connected to the S2 interface on the expansion board, rotate to 90°
-#time.sleep(0.5)
 
 
 
@@ -73,37 +67,35 @@ def isParkSign(frame) :
         
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
-        traffic_cascade_name = 'cascade.xml'
-        traffic_cascade = cv2.CascadeClassifier()
+        ox_check_name = 'cascade.xml'
+        ox_check = cv2.CascadeClassifier()
 
-        if not traffic_cascade.load(cv2.samples.findFile(traffic_cascade_name)):
-            print('--(!)Error loading traffic_cascade cascade')
+        if not ox_check.load(cv2.samples.findFile(ox_check_name)):
+            print('--(!)Error loading ox_check cascade')
 
-        traffic_sign = traffic_cascade.detectMultiScale(gray)
-        for (x,y,w,h) in traffic_sign:
+        ox_check_result = ox_check.detectMultiScale(gray)
+        for (x,y,w,h) in ox_check_result:
             center = (x + w//2, y + h//2)
             img = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
 
-            print(traffic_sign)
+            print(ox_check_result)
 
         
-        (x,y,w,h) = traffic_sign[0]
+        (x,y,w,h) = ox_check_result[0]
 
         cv2.putText(img,"Park OK(sign)", (x-20,y+h+10), cv2.FONT_HERSHEY_SIMPLEX,0.7,(255,255,255))
         cv2.imshow("0.Park OK(sign)",img)
     
-
-        return True 
+        return { "success" :True, "rect": (x,y,w,h)}
 
     except : 
         
         # cv2.imshow("stop sign",frame)
         cv2.imshow("0.Park OK(sign)",frame)
 
-        return False
+        return {"success": False, "rect" : ()}
 
     
-
 
 
 
@@ -111,20 +103,25 @@ try :
 
     while True : 
 
-        ret, frame = cap.read()
+        ret, frame = cap.read()  ### 카메라 영상 이미지 
+
+        park_sign = isParkSign(frame.copy())
+
+        if park_sign["success"] : 
+
+            (x,y,w,h) = park_sign["rect"]
 
 
+            if x > int(320/2) + 20 : 
+                Right() 
 
-        if isParkSign(frame.copy()) : 
+            elif x < int(320/2) -20 : 
+                Left()
 
-            ##### 주차 시스템 동작 
-            # Up()
-            # time.sleep(0.5)
-            # Right()
-            # time.sleep(0.5)
-            print("Park OK")
+            else : 
+                Up() 
 
-            car.Car_Stop()
+            
 
         else :   
 
