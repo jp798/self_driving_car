@@ -18,7 +18,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('a'):
         cv2.imwrite('captured_image.jpg', frame)
         print("Image saved!")
-        
+
 
     # Break the loop if 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
