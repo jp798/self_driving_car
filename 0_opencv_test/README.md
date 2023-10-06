@@ -7,7 +7,7 @@ ssh pi@192.168.0.12 (SSH 연결)
 
 diskutil list
 sudo dd if=/dev/disk2(원본) of=farm.img(복사할 이미지) bs= 10240 conv=sync
-sudo dd if=/dev/diskn of=~/Desktop/raspberry-pi-backup.img bs=1m
+sudo dd if=/dev/disk3 of=Raspberry_backup.img bs=1m
 
 ###### computer vision 설치
 
