@@ -2,17 +2,30 @@ ssh pi@192.168.0.12 (SSH 연결)
 
 ### config (Raspberry Pi - FTP connection Config )
 
-{
-"name": "Raspberry Pi",
-"host": "192.168.0.12",
-"port": 22,
-"type": "sftp",
-"username": "pi",
-"password": "1234",
-"path": "/home/pi/Desktop",
-"autosave": true,
-"confirm": true
-}
+[
+	{
+		"name": "raspbot",
+		"host": "192.168.0.13",
+		"port": 22,
+		"type": "sftp",
+		"username": "pi",
+		"password": "1234",
+		"path": "/home/pi/Desktop",
+		"autosave": true,
+		"confirm": true
+	}
+]
+
+####  실행 
+
+python3  1_buzzer_test.py
+python3  2_motor_test.py
+python3  3_servo_test.py
+python3  4_ultrasonic_test.py
+python3  5_opencv_camera.py
+
+python3 7_autoplot___test.py
+
 
 ### Node-Red
 
