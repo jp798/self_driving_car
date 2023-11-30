@@ -2,79 +2,68 @@ import RPi.GPIO as GPIO
 import time
 import cv2
 
-GPIO.setwarnings(False)
+def setup_gpio(echo_pin, trig_pin):
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(echo_pin, GPIO.IN)
+    GPIO.setup(trig_pin, GPIO.OUT)
 
-EchoPin = 18
-TrigPin = 16
-
-#Set GPIO port to BCM coding mode
-GPIO.setmode(GPIO.BOARD)
-
-GPIO.setup(EchoPin,GPIO.IN)
-GPIO.setup(TrigPin,GPIO.OUT)
-
-#Ultrasonic function
-def Distance():
-    GPIO.output(TrigPin,GPIO.LOW)
+def get_distance(trig_pin, echo_pin, timeout=0.03):
+    # Send trigger signal
+    GPIO.output(trig_pin, GPIO.LOW)
     time.sleep(0.000002)
-    GPIO.output(TrigPin,GPIO.HIGH)
+    GPIO.output(trig_pin, GPIO.HIGH)
     time.sleep(0.000015)
-    GPIO.output(TrigPin,GPIO.LOW)
+    GPIO.output(trig_pin, GPIO.LOW)
 
-    t3 = time.time()
+    start_time = time.time()
 
-    while not GPIO.input(EchoPin):
-        t4 = time.time()
-        if (t4 - t3) > 0.03 :
-            return -1
-    t1 = time.time()
-    while GPIO.input(EchoPin):
-        t5 = time.time()
-        if(t5 - t1) > 0.03 :
+    # Wait for echo start
+    while not GPIO.input(echo_pin):
+        if time.time() - start_time > timeout:
             return -1
 
-    t2 = time.time()
-    time.sleep(0.01)
-    #print ("distance_1 is %d " % (((t2 - t1)* 340 / 2) * 100))
-    return ((t2 - t1)* 340 / 2) * 100
+    echo_start = time.time()
 
-count = 0
+    # Wait for echo end
+    while GPIO.input(echo_pin):
+        if time.time() - echo_start > timeout:
+            return -1
 
-def Distance_test():
-    num = 0
-    ultrasonic = []
-    while num < 5:
-            distance = Distance()
-            #print("distance is %f"%(distance) )
-            while int(distance) == -1 :
-                distance = Distance()
-                #print("Tdistance is %f"%(distance) )
-            while (int(distance) >= 500 or int(distance) == 0) :
-                distance = Distance()
-                #print("Edistance is %f"%(distance) )
-            ultrasonic.append(distance)
-            num = num + 1
-            time.sleep(0.01)
-    distance = (ultrasonic[1] + ultrasonic[2] + ultrasonic[3])/3
-    print("count({}/20)".format(count), "distance is %f"%(distance) ) 
-    return distance
+    echo_end = time.time()
+    return ((echo_end - echo_start) * 340 / 2) * 100
 
+def get_average_distance(trig_pin, echo_pin, samples=5):
+    distances = []
+    for _ in range(samples):
+        distance = get_distance(trig_pin, echo_pin)
+        if distance != -1 and 0 < distance < 500:
+            distances.append(distance)
+        time.sleep(0.01)
 
+    if len(distances) > 0:
+        return sum(distances) / len(distances)
+    else:
+        return -1
 
-while count < 20:
-    distance = Distance_test()
-    k= cv2.waitKey(30) & 0xff
-    if k == 27:
-        print ("27")
-        break
+def main():
+    EchoPin = 18
+    TrigPin = 16
+    setup_gpio(EchoPin, TrigPin)
 
-    time.sleep(0.2)
-    count += 1 
+    for count in range(20):
+        distance = get_average_distance(TrigPin, EchoPin)
+        print(f"count({count+1}/20) - Distance: {distance:.2f} cm")
 
+        if cv2.waitKey(30) & 0xff == 27:
+            print("Esc key pressed. Exiting.")
+            break
 
+        time.sleep(0.2)
 
-print("Ending")
-GPIO.cleanup()
+    print("Ending")
+    GPIO.cleanup()
+    cv2.destroyAllWindows()
 
-cv2.destroyAllWindows()
-exit() 
+if __name__ == "__main__":
+    main()
