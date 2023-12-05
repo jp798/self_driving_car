@@ -63,7 +63,7 @@ def decide_direction(histogram):
     elif up < 10000:
         return "UP"
     else:
-        return "RANDOM"
+        return "UP"
 
 def control_car(direction):
     """
@@ -78,17 +78,10 @@ def control_car(direction):
         car.Car_Right(MOTOR_UP_SPEED, MOTOR_DOWN_SPEED)
     elif direction == "RANDOM":
         random_direction = random.choice(["LEFT", "RIGHT"])
-        control_car(random_direction)
-
-    time.sleep(0.5)
-    car.Car_Stop()
+        control_car(random_direction)    
 
 def rotate_servo(servo_id, angle):
-    """
-    Rotate the servo motor to the specified angle.
-    """
-    car.Ctrl_Servo(servo_id, angle)
-    time.sleep(0.5)
+    car.Ctrl_Servo(servo_id, angle)    
 
 try:
     rotate_servo(1, 90)  # Rotate servo at S1 to 90 degrees
@@ -110,6 +103,7 @@ try:
 
         # Display the processed frame (for debugging)
         cv2.imshow('4_Processed Frame', processed_frame)
+        
 
         key = cv2.waitKey(30) & 0xff
         if key == 27:  # press 'ESC' to quit
