@@ -1,73 +1,70 @@
 import cv2
 import numpy as np
-import time 
+import time
 
+def initialize_camera():
+    cap = cv2.VideoCapture(0)
+    cap.set(3, 320)  # set Width
+    cap.set(4, 240)  # set Height
+    cap.set(cv2.CAP_PROP_BRIGHTNESS, 70)
+    cap.set(cv2.CAP_PROP_CONTRAST, 70)
+    cap.set(cv2.CAP_PROP_SATURATION, 70)
+    cap.set(cv2.CAP_PROP_GAIN, 80)
+    return cap
 
-cap = cv2.VideoCapture(0)
-cap.set(3,320) # set Width
-cap.set(4,240) # set Height
+def load_cascade(file_name):
+    cascade = cv2.CascadeClassifier()
+    if not cascade.load(cv2.samples.findFile(file_name)):
+        print('--(!)Error loading cascade')
+        exit(0)
+    return cascade
 
-# cap.set(cv2.CAP_PROP_EXPOSURE,-20.0)
+def capture_frame(cap):
+    ret, frame = cap.read()
+    return frame
 
-cap.set(cv2.CAP_PROP_BRIGHTNESS,70)
-cap.set(cv2.CAP_PROP_CONTRAST,70)
-cap.set(cv2.CAP_PROP_SATURATION,70)
-cap.set(cv2.CAP_PROP_GAIN,80)
-
-
-# traffic_cascade_name = '2_traffic_sign_red_cascade-org.xml'
-traffic_cascade_name = 'cascade.xml'
-traffic_cascade = cv2.CascadeClassifier()
-
-
-
-#-- 1. Load the cascades
-if not traffic_cascade.load(cv2.samples.findFile(traffic_cascade_name)):
-    print('--(!)Error loading traffic_cascade cascade')
-    exit(0)    
-
-count = 0 
-
-
-while True : 
-
-    ###-- 2. 이미지 읽기 
-
-    ret, frame  = cap.read()
-
-
+def detect_traffic_sign(cascade, frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    cv2.imshow("frmae",frame)
-    cv2.imshow("gary img",gray)
+    traffic_sign = cascade.detectMultiScale(gray)
+    return traffic_sign, gray
 
+def draw_rectangles_and_text(frame, traffic_sign):
+    for (x, y, w, h) in traffic_sign:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+        cv2.putText(frame, "Red Traffic Sign", (x - 30, y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0))
+    return frame
 
-    img = None; 
+def save_image(frame, count):
+    file_name = f"./save_images/traffic_{count}.jpg"
+    cv2.imshow(file_name,frame)
+    cv2.imwrite(file_name, frame)
+    print(f"Image saved: {file_name}")
 
-    traffic_sign = traffic_cascade.detectMultiScale(gray)
-    for (x,y,w,h) in traffic_sign:
-        center = (x + w//2, y + h//2)
-        img = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
+def main():
+    cap = initialize_camera()
+    traffic_cascade = load_cascade('cascade.xml')
+    count = 0
 
-    print(traffic_sign)
+    while True:
+        frame = capture_frame(cap)
+        traffic_sign, gray = detect_traffic_sign(traffic_cascade, frame)
 
-   
+        if len(traffic_sign) > 0:
+            frame = draw_rectangles_and_text(frame, traffic_sign)
 
-    try : 
-        (x,y,w,h) = traffic_sign[0]
+        cv2.imshow("Frame", frame)
 
-        cv2.putText(img,"Red Traffic Sign", (x-30,y+20), cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,0))
-        cv2.imshow("test",img)
-        # cv2.imwrite("./test/test_{}.jpg".format(str(count)), img)
+        k = cv2.waitKey(30) & 0xff
+        if k == 27:  # press 'ESC' to quit
+            break
+        if k == 32:  # press 'SPACE' to save image
+            save_image(frame, count)
+            count += 1
 
-        count += 1 
+        time.sleep(0.1)
 
-    except : 
-        cv2.imshow("test",frame)
+    cap.release()
+    cv2.destroyAllWindows()
 
-    k = cv2.waitKey(30) & 0xff
-    if k == 27: # press 'ESC' to quit
-        break
-
-    time.sleep(0.1)
-
-    
+if __name__ == "__main__":
+    main()
